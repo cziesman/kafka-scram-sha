@@ -1,0 +1,46 @@
+kafka-server: my-cluster-kafka-bootstrap-kafka.apps.cluster-jccqj.dynamic.redhatworkshops.io:443
+
+kafka:
+  password: qg2LLkzCNWWDHTVwptpGb17rRGqypeJb
+  topic:
+    name: my-topic
+  username: my-user
+
+management:
+  endpoint:
+    env:
+      show-values: ALWAYS
+    configprops:
+      show-values: ALWAYS
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+spring:
+  application:
+    name: kafka-scram-sha
+  kafka:
+    bootstrap-servers: ${kafka-server}
+    enable-auto-commit: true
+    jaas:
+      enabled: true
+    properties:
+      sasl:
+        mechanism: SCRAM-SHA-512
+        jaas:
+          config: "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"${kafka.username}\" password=\"${kafka.password}\";"
+      security:
+        protocol: SASL_SSL
+      ssl:
+        truststore:
+          location: src/main/resources/certs/truststore.p12
+          password: ToRmZ8qgDC1H
+          type: PKCS12
+logging:
+  level:
+    root: INFO
+    org.apache.kafka.common.security: INFO
+
+  pattern:
+    console: "%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %logger.%M:%line - %msg%n"
