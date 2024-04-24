@@ -132,7 +132,7 @@ The application provides a very simple web interface that displays all messages 
 
 When running locally, the web interface can be viewed at:
 
-    http://localhost:8080/web/list
+    http://localhost:9090/web/list
 
 When deployed to Openshift, the web interface can be viewed using a URL similar to the following:
 
