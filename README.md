@@ -78,6 +78,29 @@ Use the following command to extract the JAAS configuration.
 
 The password and the JAAS configuration will need to be configured in the client application, and will be used to authenticate against the Kafka broker.
 
+
+### Truststore
+
+The cluster will also have a certificate defined in a Secret. This demo assumes that the default self-signed certificate is used. In this case, the secret is named _my-cluster-cluster-ca-cert_.
+
+Use the following commands to extract the cluster truststore and associated password.
+
+    oc get secret my-cluster-cluster-ca-cert -n kafka -o jsonpath='{.data.ca\.p12}' | base64 -d > truststore.p12
+    
+    oc get secret my-cluster-cluster-ca-cert -n kafka -o jsonpath='{.data.ca\.password}' | base64 -d
+
+When running the demo on a local machine, the truststore file needs to be accessible. For this demo, it is placed in the `src/main/resources/certs` directory and the path is configured for Kafka in `application.yaml`. The password that was extracted is also configured in `application.yaml`. Note that in a production environment, the password would be stored in a Secret or retrieved from a secure application like Vault.
+
+In order to deploy the client application on Openshift, the truststore must be available via a Secret. Luckily, the openshift-maven-plugin makes this easy. Use the following commands to convert the truststore file into a secret that can be configured in a template for use by the openshift-maven-plugin:
+
+    oc create secret generic dontcare --from-file=./src/main/resources/certs/truststore.p12 -o yaml --dry-run=client
+
+Use the YAML output from the commands to create the definition for a Secret named *kafka-client-secret*, which can be found in the file `src/main/resources/secret.yaml`.
+
+Create the secret:
+
+    oc apply -f src/main/resources/secret.yaml -n kafka-client
+
 ### Client Application
 
 The client application is built using Maven, Spring Boot, and the *spring-kafka* library. It consists of a KafkaConsumer and a KafkaProducer.
