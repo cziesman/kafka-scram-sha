@@ -163,7 +163,7 @@ This command will compile the code, build a JAR file, and run the JAR file.
 
 Once the application is running, it can be tested using a command similar to the following:
 
-    curl http://localhost:8080/api/send?message=hello
+    curl http://localhost:9090/api/send?message=hello
 
 If the message is sent, the response should be `Sent [hello]`.
 

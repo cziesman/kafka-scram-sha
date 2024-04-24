@@ -1,6 +1,9 @@
 kafka:
   bootstrap-servers: my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9093
 
+server:
+  port: 8080
+
 spring:
   kafka:
     bootstrap-servers: my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9093
